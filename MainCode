@@ -1,0 +1,274 @@
+' #######  #        #     #  #     #  #######  ######   ###  #     #
+' #        #        ##   ##  ##    #     #     #     #   #    #   #
+' #        #        # # # #  # #   #     #     #     #   #     # #
+' #####    #        #  #  #  #  #  #     #     ######    #      #
+' #        #        #     #  #   # #     #     #   #     #     # #
+' #        #        #     #  #    ##     #     #    #    #    #   #
+' #######  #######  #     #  #     #     #     #     #  ###  #     #
+
+
+'NOte  Before Running Code
+'GO TO: VBA Macro > Tools > References... >  Select  > 1. Microsoft HTML Object Library	 
+'						       2. Microsoft Internet Controls
+'					 	       3. Microsoft Shell Controls And Automation
+'
+
+'Add Your Username in variable UserName: 
+'Add Your Password in variable Password:
+
+
+
+Sub login()
+myValue = InputBox("Input Index No:")
+
+Vcode = ThisWorkbook.Sheets("Log Sheet").Range("E" + myValue).Value
+'If CAM = doc.getElementsByName(ThisWorkbook.Sheets("Log Sheet").Range("B" + myValue).Value) Then
+'MsgBox Vcode
+VoCode = ThisWorkbook.Sheets("Log Sheet").Range("C" + myValue).Value
+'MsgBox VoCode
+PortCode = ThisWorkbook.Sheets("Log Sheet").Range("G" + myValue).Value
+MsgBox "/" + Vcode + "/" + VoCode + "/" + PortCode + "/"
+Set ie = New InternetExplorerMedium
+ie.Visible = True
+url = "http://elmtrix.tech" ' add your website here
+currenturl = ie.LocationURL
+Homeurl = "http://elmtrix.tech" ' add your website here
+
+
+
+ie.Navigate2 url 'load webpage
+
+Do While ie.ReadyState <> 4 Or _
+   ie.Busy = True
+   DoEvents
+Loop
+
+'login using password
+
+'Set UserName = ie.Document.getElementById("login_userName")
+Set UserName = ie.Document.getElementsByName("userName")(0)
+UserName.Value = "userName"
+
+'Set Password = ie.Document.getElementById("login_password")
+Set Password = ie.Document.getElementsByName("password")(0)
+Password.Value = "password"
+
+ie.Document.forms(0).submit
+
+Do While ie.ReadyState <> 4 Or _
+   ie.Busy = True
+   DoEvents
+Loop
+
+'ie.Document.querySelector("a[onClick*='DatedSchedule()']").Selected = True
+
+
+Dim HTMLLink As MSHTML.HTMLAnchorElement
+Dim lists As IHTMLElementCollection
+Dim anchorElements As IHTMLElementCollection
+Dim ulElement As HTMLUListElement
+Dim liElement As HTMLLIElement
+'Dim myValue As Object
+'Dim Homeurl As String
+Dim row As Long
+
+currenturl = ie.LocationURL
+Homeurl = "http://elmtrix.tech" ' add your website here
+DatedUrl = "http://elmtrix.tech" ' add your website here
+
+If (currenturl) = (Homeurl) Then
+ie.Navigate DatedUrl
+End If
+
+Do While ie.ReadyState <> 4 Or _
+   ie.Busy = True
+   DoEvents
+Loop
+
+currenturl = ie.LocationURL
+
+If (currenturl) = (DatedUrl) Then
+Set VesselCode = ie.Document.getElementById("DatedSchedule_vesselCodeDatSch")
+VesselCode.Value = Vcode
+Application.SendKeys ("~")
+'ThisWorkbook.Sheets("Log Sheet").Range("E" + myValue).Value.Click
+'VesselCode.Click
+
+End If
+
+Do While ie.ReadyState <> 4 Or _
+   ie.Busy = True
+   DoEvents
+Loop
+
+VoyageUrl = "http://elmtrix.tech" ' add your website here
+currenturl = ie.LocationURL
+If (currenturl) = (VoyageUrl) Then
+
+
+Dim IEtable As IHTMLTable
+Dim IEtables As IHTMLElementCollection
+Dim IERow As IHTMLTableRow
+Dim IECell As IHTMLTableCell
+
+
+
+
+'set table
+Set IEtable = ie.Document.getElementsByTagName("table")(1)
+
+
+
+'Debug.Print IETable.Rows.Length
+
+
+max_rows = IEtable.Rows.Length
+'Debug.Print max_rows
+
+'traverse every cell
+
+For Each IERow In IEtable.Rows
+    'Debug.Print "==================="
+    'Debug.Print IERow.innerText
+    'Debug.Print "==================="
+    'Debug.Print
+    
+    For Each IECell In IERow.Cells
+        'Debug.Print "+++++===================++++"
+        'Debug.Print IECell.innerText
+        ValueOfCell = IECell.innerText
+        'Debug.Print IECell.innerText + "value of cell"
+        finalstring = Trim(ValueOfCell)
+        If finalstring = VoCode Then
+
+            'Set tobeclicked = IECell.getElementsByTagName("td").innerText
+            'Debug.Print tobeclicked
+            IECell.Click
+            
+             
+        
+            
+        End If
+    Next
+Next
+
+'++++++++++++++++==================
+'part two
+
+Do While ie.ReadyState <> 4 Or _
+                ie.Busy = True
+                DoEvents
+ Loop
+            
+
+MsgBox "step two"
+'Application.SendKeys ("~")
+' define voyage sites variable
+
+
+'Dim IEtableVoyageSites As IHTMLTable
+'Dim IEtablesVoyageSites As IHTMLElementCollection
+'Dim IERowVoyageSites As IHTMLTableRow
+'Dim IECellVoyageSites As IHTMLTableCell
+
+    
+     Dim btn As Object
+     Dim tRows As Object
+     Dim temp As Object
+     Dim Table As Object
+     Dim tHead As Object
+     Dim tCells As Object
+     Dim np As Variant
+     Dim numPages As String
+     
+     Dim pos As Integer
+     Dim rNum As Integer
+     Dim cNum As Integer
+     
+     Set Table = ie.Document.getElementById("myGrid")
+     
+     Set tRows = Table.getElementsByTagName("tr")
+     Dim CellValue As Integer
+     CellValue = 1
+     Dim index As Integer
+     index = 1
+     Debug.Print tRows.Length
+     For Each r In tRows
+     If InStr(r.innerText, PortCode) > 0 Then
+        r.Click
+       
+        
+    End If
+       
+        
+        
+        'Set tCells = r.getElementsByTagName("td")
+        'For Each c In tCells
+        
+        'Next
+          
+      Next
+      
+      Dim ArrivalDT As Variant
+      Dim ADatex As String
+      Dim ATimeX As String
+      Dim Aarr() As String
+      Dim ADarr() As String
+      Dim ATarr() As String
+      
+      Dim DepartureDT As Variant
+      Dim DDatex As String
+      Dim DTimeX As String
+        Dim Darr() As String
+       Dim DDarr() As String
+       Dim DTarr() As String
+       
+     
+       
+    ArrivalDT = ThisWorkbook.Sheets("Log Sheet").Range("K" + myValue).Value
+    DepartureDT = ThisWorkbook.Sheets("Log Sheet").Range("L" + myValue).Value
+    Aarr = Split(ArrivalDT)
+    Darr = Split(DepartureDT)
+
+ 
+   ADatex = Aarr(0)
+   ADarr = Split(ADatex, "/")
+   ADfinal = ADarr(2) & "-" & ADarr(1) & "-" & ADarr(0)
+   Debug.Print ADfinal
+   
+   ATimeX = Aarr(1)
+    ATarr = Split(ATimeX, ":")
+   ATfinal = ATarr(0) & ":" & ATarr(1)
+   Debug.Print ATfinal
+    
+    DDatex = Darr(0)
+   DDarr = Split(DDatex, "/")
+   DDfinal = DDarr(2) & "-" & DDarr(1) & "-" & DDarr(0)
+   Debug.Print DDfinal
+   
+   DTimeX = Darr(1)
+    DTarr = Split(DTimeX, ":")
+   DTfinal = DTarr(0) & ":" & DTarr(1)
+   Debug.Print DTfinal
+    
+Set ArrivalDate = ie.Document.getElementsByName("arrivalDate")(0)
+ArrivalDate.Value = ADfinal
+ Set ArrivalTime = ie.Document.getElementsByName("arrivalTime")(0)
+ArrivalTime.Value = ATfinal
+
+Set DepartureDate = ie.Document.getElementsByName("deprtDate")(0)
+DepartureDate.Value = DDfinal
+
+Set DepartureTime = ie.Document.getElementsByName("deprtTime")(0)
+DepartureTime.Value = DTfinal
+    
+Set FinalClick = ie.Document.getElementById("updateSites")
+FinalClick.Click
+
+    
+End If
+
+
+
+End Sub
+
